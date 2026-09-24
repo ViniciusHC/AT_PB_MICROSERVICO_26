@@ -8,13 +8,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26
 
     steps:
       - name: Baixa o código do repositório
         uses: actions/checkout@v5
 
-      - name: Instala o Java 17
+      - name: Instala o Java 21
         uses: actions/setup-java@v5
         with:
           distribution: temurin
