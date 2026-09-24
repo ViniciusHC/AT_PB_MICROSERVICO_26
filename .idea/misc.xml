@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/Api Gateway/ApiGatewayBG/pom.xml" />
+        <option value="$PROJECT_DIR$/Microserviço_ForumService/forum-service/pom.xml" />
+        <option value="$PROJECT_DIR$/MicroServiço_BoardGameService/TP2_SPRINGBOOT_PB-main/pom.xml" />
+        <option value="$PROJECT_DIR$/EurekaConfigServer/pom.xml" />
+        <option value="$PROJECT_DIR$/Eureka/pom.xml" />
+        <option value="$PROJECT_DIR$/ConfigServer/pom.xml" />
+        <option value="$PROJECT_DIR$/ApiGatewayBG/pom.xml" />
+        <option value="$PROJECT_DIR$/forum-service/pom.xml" />
+        <option value="$PROJECT_DIR$/BG-service/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="openjdk-26" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

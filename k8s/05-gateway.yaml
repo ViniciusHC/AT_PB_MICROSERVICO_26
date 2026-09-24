@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: cadastrobgservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      initContainers:
+        - name: espera-eureka
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z eureka-serverbg 8888; do sleep 2; done']
+        - name: espera-config-server
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z config-serverbg 8889; do sleep 2; done']
+      containers:
+        - name: gateway
+          image: tp3-gatewaybg:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "optional:configserver:http://config-serverbg:8889"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka-serverbg:8888/eureka/"
+          readinessProbe:
+            tcpSocket:
+              port: 8085
+            initialDelaySeconds: 15
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: cadastrobgservice
+spec:
+  type: ClusterIP
+  selector:
+    app: gateway
+  ports:
+    - port: 8085
+      targetPort: 8085

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-serverbg
+  namespace: cadastrobgservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka-serverbg
+  template:
+    metadata:
+      labels:
+        app: eureka-serverbg
+    spec:
+      containers:
+        - name: eureka-serverbg
+          image: tp3-eureka-serverbg:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8888
+          readinessProbe:
+            tcpSocket: { port: 8888 }
+            initialDelaySeconds: 15
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-serverbg
+  namespace: cadastrobgservice
+spec:
+  selector:
+    app: eureka-serverbg
+  ports:
+    - port: 8888
+      targetPort: 8888

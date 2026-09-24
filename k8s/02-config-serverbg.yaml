@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-serverbg
+  namespace: cadastrobgservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-serverbg
+  template:
+    metadata:
+      labels:
+        app: config-serverbg
+    spec:
+      containers:
+        - name: config-serverbg
+          image: tp3-config-serverbg:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8889
+          env:
+            - name: SPRING_CLOUD_CONFIG_SERVER_GIT_URI
+              value: "https://github.com/ViniciusHC/boardgame-config-repo"
+          readinessProbe:
+            tcpSocket:
+              port: 8889
+            initialDelaySeconds: 15
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-serverbg
+  namespace: cadastrobgservice
+spec:
+  selector:
+    app: config-serverbg
+  ports:
+    - port: 8889
+      targetPort: 8889

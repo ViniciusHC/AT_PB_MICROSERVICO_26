@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forum-server
+  namespace: cadastrobgservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forum-server
+  template:
+    metadata:
+      labels:
+        app: forum-server
+    spec:
+      initContainers:
+        - name: espera-eureka
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z eureka-serverbg 8888; do sleep 2; done']
+        - name: espera-config-server
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z config-serverbg 8889; do sleep 2; done']
+        - name: espera-rabbitmq
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z rabbitmq 5672; do sleep 2; done']
+      containers:
+        - name: forum-server
+          image: tp3-forum-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "optional:configserver:http://config-serverbg:8889"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka-serverbg:8888/eureka/"
+            - name: SPRING_RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+          readinessProbe:
+            tcpSocket:
+              port: 8082
+            initialDelaySeconds: 20
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forum-server
+  namespace: cadastrobgservice
+spec:
+  type: ClusterIP
+  selector:
+    app: forum-server
+  ports:
+    - port: 8082
+      targetPort: 8082
