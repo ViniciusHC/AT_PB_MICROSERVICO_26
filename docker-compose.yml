@@ -3,7 +3,13 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
+      - "5673:5672"
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - microservicos-net
 
@@ -12,6 +18,11 @@ services:
     container_name: eureka-serverbg
     ports:
       - "8888:8888"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8888/actuator/health || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - microservicos-net
 
@@ -20,9 +31,13 @@ services:
     container_name: config-serverbg
     ports:
       - "8889:8889"
+    restart: unless-stopped
     environment:
       - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/ViniciusHC/boardgame-config-repo
       - SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL=main
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-serverbg:8888/eureka/
+    depends_on:
+      - eureka-serverbg
     networks:
       - microservicos-net
 
@@ -31,17 +46,21 @@ services:
     container_name: boardgame-server
     ports:
       - "8081:8081"
+    restart: unless-stopped
     environment:
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-serverbg:8889
+      - SPRING_CONFIG_IMPORT=configserver:http://config-serverbg:8889
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-serverbg:8888/eureka/
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION=true
       - SPRING_SQL_INIT_MODE=always
     depends_on:
-      - config-serverbg
-      - eureka-serverbg
-      - rabbitmq
+      config-serverbg:
+        condition: service_started
+      eureka-serverbg:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     networks:
       - microservicos-net
 
@@ -50,17 +69,21 @@ services:
     container_name: forum-server
     ports:
       - "8082:8082"
+    restart: unless-stopped
     environment:
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-serverbg:8889
+      - SPRING_CONFIG_IMPORT=configserver:http://config-serverbg:8889
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-serverbg:8888/eureka/
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION=true
       - SPRING_SQL_INIT_MODE=always
     depends_on:
-      - config-serverbg
-      - eureka-serverbg
-      - rabbitmq
+      config-serverbg:
+        condition: service_started
+      eureka-serverbg:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     networks:
       - microservicos-net
 
@@ -69,12 +92,15 @@ services:
     container_name: gatewaybg
     ports:
       - "8085:8085"
+    restart: unless-stopped
     environment:
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-serverbg:8889
+      - SPRING_CONFIG_IMPORT=configserver:http://config-serverbg:8889
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-serverbg:8888/eureka/
     depends_on:
-      - config-serverbg
-      - eureka-serverbg
+      config-serverbg:
+        condition: service_started
+      eureka-serverbg:
+        condition: service_started
     networks:
       - microservicos-net
 

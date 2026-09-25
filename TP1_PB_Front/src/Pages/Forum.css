@@ -12,36 +12,154 @@ h2 {
   margin-bottom: 15px;
 }
 
+.acoes-navegacao {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.btn-atualizar {
+  background-color: #2b7a78;
+}
+
+.btn-atualizar:hover {
+  background-color: #17252a;
+}
+
 .container {
-  max-width: 600px;
+  max-width: 650px;
   margin: 0 auto;
 }
 
 .lista-topicos {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   margin-bottom: 30px;
 }
 
-.lista-topicos .card-jogo {
+.nenhum-topico {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.card-topico {
+  background: white;
+  padding: 18px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 10px;
+  border-left: 5px solid #ccc;
+  transition: all 0.2s ease-in-out;
+}
+
+.card-topico.card-aceito {
+  border-left-color: #28a745;
+}
+
+.card-topico.card-pendente {
+  border-left-color: #ffc107;
+}
+
+.card-topico.card-recusado {
+  border-left-color: #dc3545;
+}
+
+.topico-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
-.lista-topicos .card-jogo p:first-of-type {
-  font-size: 16px;
-  color: #c75033;
+.topico-cabecalho h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #222;
 }
 
-.lista-topicos .card-jogo p:last-of-type {
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-aceito {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.badge-pendente {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.badge-recusado {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.topico-info-jogo {
+  font-size: 14px;
+  color: #444;
+  background-color: #f8f9fa;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.info-id-jogo {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.motivo-erro-box {
+  font-size: 13px;
+  color: #721c24;
+  background-color: #fdf2f2;
+  border: 1px solid #f5c6cb;
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+
+.topico-texto {
   font-weight: normal;
-  color: #555;
-  line-height: 1.4;
+  color: #333;
+  line-height: 1.5;
+  margin: 5px 0;
+  white-space: pre-wrap;
 }
 
-.lista-topicos .card-jogo button {
-  align-self: flex-end;
+.topico-rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+  margin-top: 5px;
+}
+
+.topico-metadados {
+  font-size: 12px;
+  color: #777;
+}
+
+.btn-excluir {
+  padding: 6px 12px;
+  font-size: 13px;
   background-color: #c49528;
+}
+
+.btn-excluir:hover {
+  background-color: #a0781e;
 }

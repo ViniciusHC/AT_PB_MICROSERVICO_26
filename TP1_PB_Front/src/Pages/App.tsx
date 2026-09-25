@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 interface BoardGame {
-  id: number;
+  id?: number;
   nome: string;
   descricao: string;
   editora: string;
@@ -38,6 +38,10 @@ function App() {
   async function listarJogos() {
     try {
       const resposta = await fetch("http://localhost:8085/boardgame-service/boardgames");
+      if (!resposta.ok) {
+        alert(`Erro ao buscar os jogos: Servidor retornou status ${resposta.status}`);
+        return;
+      }
       const data = await resposta.json();
       setBoardGames(data);
     } catch (erro) {
@@ -113,6 +117,10 @@ function App() {
   async function listarJogo(jogoBuscado: BoardGame) {
     try {
       const resposta = await fetch(`http://localhost:8085/boardgame-service/boardgames/${jogoBuscado.id}`);
+      if (!resposta.ok) {
+        alert(`Erro ao buscar dados do jogo: Servidor retornou status ${resposta.status}`);
+        return;
+      }
       const data = await resposta.json();
       setBoardGames([data]);
     } catch (erro) {
