@@ -84,7 +84,7 @@ function ForumPage() {
                 body: JSON.stringify(novoTopico)
             });
             if (resposta.ok) {
-                alert("Tópico cadastrado com sucesso! A validação do jogo foi enviada via RabbitMQ.");
+                alert("Tópico cadastrado com sucesso!");
                 limparFormulario();
                 listarTopicos();
             } else {
